@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const questionsRoutes = require('./routes/questionsRoutes');
 const matiereRoutes = require('./routes/matiereRoutes');
+const chapitreRoutes = require('./routes/chapitreRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const scoreRoutes = require('./routes/scoreRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -26,6 +27,7 @@ app.use('/api/questions', questionsRoutes);
 app.use('/api/score', scoreRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/matiere', matiereRoutes);
+app.use('/api/chapitre', chapitreRoutes);
 app.use('/api/user', userRoutes);
 
 

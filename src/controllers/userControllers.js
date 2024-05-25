@@ -1,4 +1,12 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken')
+
+
+// fonction pour créer un token
+const createToken = (_id) => {
+    return jwt.sign({_id}, process.env.SECRET, { expiresIn : '3d'})
+}
+
 
 // Controller pour obtenir tous les utilisateurs
 const getAllUsers = async (req, res) => {
@@ -10,16 +18,6 @@ const getAllUsers = async (req, res) => {
     }
 };
 
-// Controller pour créer un nouvel utilisateur
-const createUser = async (req, res) => {
-    const user = new User(req.body);
-    try {
-        const newUser = await user.save();
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
 
 // Controller pour obtenir un utilisateur spécifique
 const getUser = async (req, res) => {
@@ -60,10 +58,51 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// login user
+const loginUser = async (req,res) => {
+
+    const {email, password} = req.body
+
+    try {
+        const user = await User.login(email, password)
+        // créer un token
+        const token = createToken(user._id)
+
+        res.status(200).json({email, token})
+    }
+    catch (error) {
+        res.status(400).json({error: error.message})
+    }
+
+    
+}
+
+// signup user
+const signupUser = async (req,res) => {
+    const {username, email, password} = req.body
+
+    try {
+        const user = await User.signup(username, email, password)
+
+        // créer le token
+        const token = createToken(user._id)
+
+        res.status(200).json({email,token})
+        res.json({mssg: 'signup user'})
+    }
+    catch (error) {
+        res.status(400).json({error: error.message})
+    }
+
+
+    
+}
+
 module.exports = {
     getAllUsers,
-    createUser,
     getUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser,
+    signupUser
 };

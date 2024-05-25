@@ -8,7 +8,8 @@ const {
     getQuestion,
     updateQuestion,
     deleteQuestion,
-    updateQuestionPartial
+    updateQuestionPartial,
+    getRandomQuestion
 } = require('../controllers/questionControllers');
 
 // Créer un routeur express
@@ -16,6 +17,7 @@ const router = express.Router();
 
 // Définir les routes
 router.get('/', getAllQuestions); // Obtenir toutes les questions
+router.get('/random/:chapitreId', getRandomQuestion);
 router.post('/create', createQuestion); // Créer une nouvelle question
 router.get('/:id', getQuestion); // Obtenir une question spécifique
 router.put('/:id', updateQuestion); // Mettre à jour une question existante

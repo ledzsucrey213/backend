@@ -74,11 +74,40 @@ const updateQuestionPartial = async (req, res) => {
     }
 };
 
+
+// Controller pour obtenir une question aléatoire d'un chapitre spécifique
+const getRandomQuestion = async (req, res) => {
+    const chapitreId = req.params.chapitreId;
+    try {
+        // Trouver toutes les questions liées au chapitre spécifique
+        const questions = await Question.find({ chapitre: chapitreId });
+
+        if (questions.length === 0) {
+            return res.status(404).json({ message: 'Aucune question trouvée pour ce chapitre' });
+        }
+
+        // Sélectionner une question au hasard parmi celles liées au chapitre
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        const randomQuestion = questions[randomIndex];
+
+        res.json(randomQuestion);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
+
+
+
+
 module.exports = {
     getAllQuestions,
     createQuestion,
     getQuestion,
     updateQuestion,
     deleteQuestion,
-    updateQuestionPartial
+    updateQuestionPartial,
+    getRandomQuestion
 }
