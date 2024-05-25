@@ -78,24 +78,19 @@ const loginUser = async (req,res) => {
 }
 
 // signup user
-const signupUser = async (req,res) => {
-    const {username, email, password} = req.body
+const signupUser = async (req, res) => {
+    const { username, email, password, nom, prenom, numero, adresse } = req.body;
 
     try {
-        const user = await User.signup(username, email, password)
+        const user = await User.signup(username, email, password, nom, prenom, numero, adresse);
 
         // créer le token
-        const token = createToken(user._id)
+        const token = createToken(user._id);
 
-        res.status(200).json({email,token})
-        res.json({mssg: 'signup user'})
+        res.status(200).json({ email, token });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
-    catch (error) {
-        res.status(400).json({error: error.message})
-    }
-
-
-    
 }
 
 module.exports = {
