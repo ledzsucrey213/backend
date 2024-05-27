@@ -60,10 +60,24 @@ const deleteScore = async (req, res) => {
     }
 };
 
+// Controller pour obtenir les scores d'un étudiant spécifique
+const getScoresByStudentId = async (req, res) => {
+    try {
+        const scores = await Score.find({ student: req.params.studentId }).sort({ date: -1 });
+        if (scores.length === 0) {
+            return res.status(404).json({ message: 'No scores found for this student' });
+        }
+        res.json(scores);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getAllScores,
     createScore,
     getScore,
     updateScore,
-    deleteScore
+    deleteScore,
+    getScoresByStudentId
 };

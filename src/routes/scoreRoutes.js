@@ -7,7 +7,8 @@ const {
     createScore,
     getScore,
     updateScore,
-    deleteScore
+    deleteScore,
+    getScoresByStudentId
 } = require('../controllers/scoreControllers');
 
 // Créer un routeur express
@@ -19,6 +20,8 @@ router.post('/create', createScore); // Créer un nouveau score
 router.get('/:id', getScore); // Obtenir un score spécifique
 router.put('/:id', updateScore); // Mettre à jour un score existant
 router.delete('/:id', deleteScore); // Supprimer un score existant
+// Route pour obtenir les scores d'un étudiant spécifique
+router.get('/student/:studentId', getScoresByStudentId);
 
 // Exporter le routeur
 module.exports = router;
