@@ -35,6 +35,7 @@ const getUser = async (req, res) => {
       nom: user.nom,
       adresse: user.adresse,
       numero: user.numero,
+      modo : user.modo
     });
   } catch (error) {
     console.error('Server error:', error);
@@ -107,6 +108,9 @@ module.exports = {
   loginUser,
   signupUser
 };
+
+
+
 
 
 
