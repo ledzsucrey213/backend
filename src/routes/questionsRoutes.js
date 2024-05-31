@@ -1,28 +1,32 @@
-// Importer express
-const express = require('express')
+// src/routes/questionsRoutes.js
 
-// Importer les contrôleurs
+const express = require('express');
 const {
-    getAllQuestions,
-    createQuestion,
-    getQuestion,
-    updateQuestion,
-    deleteQuestion,
-    updateQuestionPartial,
-    getRandomQuestion
+  getAllQuestions,
+  createQuestion,
+  getQuestion,
+  updateQuestion,
+  deleteQuestion,
+  updateQuestionPartial,
+  getRandomQuestion,
+  createMultipleQuestions,
+  handlePdfUploadAndGenerateQuestions,
+  upload
 } = require('../controllers/questionControllers');
 
-// Créer un routeur express
 const router = express.Router();
 
-// Définir les routes
-router.get('/', getAllQuestions); // Obtenir toutes les questions
-router.get('/random/:chapitreId', getRandomQuestion);
-router.post('/create', createQuestion); // Créer une nouvelle question
-router.get('/:id', getQuestion); // Obtenir une question spécifique
-router.put('/:id', updateQuestion); // Mettre à jour une question existante
-router.delete('/:id', deleteQuestion); // Supprimer une question existante
-router.patch('/questions/:id', updateQuestionPartial); // Mettre à jour partiellement une question existante
+router.post('/upload-pdf', upload.single('pdf'), handlePdfUploadAndGenerateQuestions);
 
-// Exporter le routeur
+router.get('/', getAllQuestions);
+router.post('/', createQuestion);
+router.post('/multiple', createMultipleQuestions);
+router.get('/:id', getQuestion);
+router.put('/:id', updateQuestion);
+router.patch('/:id', updateQuestionPartial);
+router.delete('/:id', deleteQuestion);
+router.get('/random/:chapitreId', getRandomQuestion);
+
 module.exports = router;
+
+

@@ -1,5 +1,4 @@
-// Importer le modèle de question
-const Question = require('../models/questions');
+
 
 // Controller pour obtenir toutes les questions
 const getAllQuestions = async (req, res) => {
@@ -21,6 +20,25 @@ const createQuestion = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+
+// Nouveau Controller pour créer plusieurs questions à la fois
+const createMultipleQuestions = async (req, res) => {
+    if (!Array.isArray(req.body.questions) || req.body.questions.length === 0) {
+        return res.status(400).json({ message: 'You must provide at least one question' });
+    }
+
+    try {
+        const questions = await Question.insertMany(req.body.questions);
+        res.status(201).json(questions);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+
+
+
 
 // Controller pour obtenir une question spécifique
 const getQuestion = async (req, res) => {
@@ -96,18 +114,85 @@ const getRandomQuestion = async (req, res) => {
     }
 };
 
+// src/controllers/questionControllers.js
 
+const Question = require('../models/questions');
+const Chapter = require('../models/chapitre');
+const fs = require('fs');
+const multer = require('multer');
+const pdfParse = require('pdf-parse'); // Pour analyser le PDF
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/pdfs'); // Dossier où les fichiers PDF seront stockés
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
 
+const upload = multer({ storage: storage });
 
+// Fonction pour analyser le PDF et générer des questions
+const generateQuestionsFromPDF = async (pdfPath) => {
+  const dataBuffer = fs.readFileSync(pdfPath);
+  const data = await pdfParse(dataBuffer);
 
+  const questions = [];
+  const content = data.text.split('\n').slice(0, 10); // Supposons que chaque ligne est une question
+
+  for (let i = 0; i < 10; i++) {
+    questions.push({
+      text: `Question ${i + 1}: ${content[i]}`,
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      answer: 'Option 1',
+      correction: 'Explanation for the answer',
+    });
+  }
+
+  return questions;
+};
+
+const handlePdfUploadAndGenerateQuestions = async (req, res) => {
+  const chapterId = req.body.chapterId;
+
+  if (!req.file) {
+    return res.status(400).json({ message: 'Aucun fichier PDF téléchargé' });
+  }
+
+  const pdfPath = req.file.path;
+
+  try {
+    await Chapter.findByIdAndUpdate(chapterId, { pdfPath: pdfPath });
+
+    const questions = await generateQuestionsFromPDF(pdfPath);
+    const questionsWithChapterId = questions.map(question => ({
+      ...question,
+      chapitre: chapterId,
+    }));
+
+    const createdQuestions = await Question.insertMany(questionsWithChapterId);
+
+    res.status(201).json({ message: 'PDF téléchargé et questions générées', questions: createdQuestions });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
-    getAllQuestions,
-    createQuestion,
-    getQuestion,
-    updateQuestion,
-    deleteQuestion,
-    updateQuestionPartial,
-    getRandomQuestion
-}
+  getAllQuestions,
+  createQuestion,
+  getQuestion,
+  updateQuestion,
+  deleteQuestion,
+  updateQuestionPartial,
+  getRandomQuestion,
+  createMultipleQuestions,
+  handlePdfUploadAndGenerateQuestions,
+  upload
+};
+
+
+
+
+
