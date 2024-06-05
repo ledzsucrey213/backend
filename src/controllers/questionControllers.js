@@ -114,6 +114,25 @@ const getRandomQuestion = async (req, res) => {
     }
 };
 
+
+const getAllQuestionsByChapter = async (req, res) => {
+    const chapitreId = req.params.chapitreId;
+    try {
+        // Trouver toutes les questions liées au chapitre spécifique
+        const questions = await Question.find({ chapitre: chapitreId });
+
+        if (questions.length === 0) {
+            return res.status(404).json({ message: 'Aucune question trouvée pour ce chapitre' });
+        }
+
+        // Renvoie toutes les questions liées au chapitre
+        res.json(questions);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 // src/controllers/questionControllers.js
 
 const Question = require('../models/questions');
@@ -189,7 +208,8 @@ module.exports = {
   getRandomQuestion,
   createMultipleQuestions,
   handlePdfUploadAndGenerateQuestions,
-  upload
+  upload,
+  getAllQuestionsByChapter
 };
 
 

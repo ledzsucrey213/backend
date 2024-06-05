@@ -11,7 +11,8 @@ const {
   getRandomQuestion,
   createMultipleQuestions,
   handlePdfUploadAndGenerateQuestions,
-  upload
+  upload,
+  getAllQuestionsByChapter
 } = require('../controllers/questionControllers');
 
 const router = express.Router();
@@ -19,6 +20,7 @@ const router = express.Router();
 router.post('/upload-pdf', upload.single('pdf'), handlePdfUploadAndGenerateQuestions);
 
 router.get('/', getAllQuestions);
+router.get('/:chapitreId', getAllQuestionsByChapter);
 router.post('/', createQuestion);
 router.post('/multiple', createMultipleQuestions);
 router.get('/:id', getQuestion);
