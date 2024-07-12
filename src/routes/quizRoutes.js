@@ -7,7 +7,8 @@ const {
     createQuiz,
     getQuiz,
     updateQuiz,
-    deleteQuiz
+    deleteQuiz,
+    getRandomQuizByChapter
 } = require('../controllers/quizControllers');
 
 // Créer un routeur express
@@ -19,6 +20,8 @@ router.post('/create', createQuiz); // Créer un nouveau quiz
 router.get('/:id', getQuiz); // Obtenir un quiz spécifique
 router.put('/:id', updateQuiz); // Mettre à jour un quiz existant
 router.delete('/:id', deleteQuiz); // Supprimer un quiz existant
+// Route pour obtenir un quiz aléatoire par chapitre
+router.get('/:chapitreId', getRandomQuizByChapter);
 
 // Exporter le routeur
 module.exports = router;

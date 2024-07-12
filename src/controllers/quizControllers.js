@@ -60,10 +60,26 @@ const deleteQuiz = async (req, res) => {
     }
 };
 
+// Controller pour obtenir un quiz aléatoire par chapitre
+const getRandomQuizByChapter = async (req, res) => {
+    const chapitreId = req.params.chapitreId;
+    try {
+        const quizzes = await Quiz.find({ chapitre: chapitreId });
+        if (quizzes.length === 0) {
+            return res.status(404).json({ message: 'No quizzes found for this chapter' });
+        }
+        const randomQuiz = quizzes[Math.floor(Math.random() * quizzes.length)];
+        res.status(200).json(randomQuiz);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     getAllQuizzes,
     createQuiz,
     getQuiz,
     updateQuiz,
-    deleteQuiz
+    deleteQuiz,
+    getRandomQuizByChapter
 };
