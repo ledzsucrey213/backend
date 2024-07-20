@@ -18,7 +18,7 @@ const userSCHEMA = new Schema({
 userSCHEMA.statics.signup = async function(username, email, password, nom, prenom, numero, adresse, modo = false) {
 
     // validation
-    if (!username || !email || !password || !nom || !prenom || !numero || !adresse) {
+    if (!username || !email || !password || !nom || !prenom || !numero) {
         throw Error('Tous les champs doivent être complétés');
     }
     if (!validator.isEmail(email)) {
