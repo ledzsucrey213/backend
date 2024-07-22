@@ -10,12 +10,11 @@ const userSCHEMA = new Schema({
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
     numero: { type: String, required: true },
-    adresse: { type: String, required: true },
     modo: { type: Boolean, required: false }
 });
 
 // static signup method
-userSCHEMA.statics.signup = async function(username, email, password, nom, prenom, numero, adresse, modo = false) {
+userSCHEMA.statics.signup = async function(username, email, password, nom, prenom, numero, modo = false) {
 
     // validation
     if (!username || !email || !password || !nom || !prenom || !numero) {
@@ -40,7 +39,7 @@ userSCHEMA.statics.signup = async function(username, email, password, nom, preno
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const user = await this.create({ username, email, password: hash, nom, prenom, numero, adresse, modo });
+    const user = await this.create({ username, email, password: hash, nom, prenom, numero, modo });
 
     return user;
 }
